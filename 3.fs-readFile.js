@@ -1,12 +1,21 @@
-import fs from 'node:fs'
+import fs, { read } from 'node:fs'
+//utilize with native modules without promise mode
+// import { promisify } from 'node:util'
 
-const text = await fs.readFile('./archivo.txt', 'utf-8', () => {})
+// const readFilePromised = promisify(fs.readFile)
 
-console.log('Leyendo el archivo el primer archivo...')
-console.log(text)
+console.log('Leyendo el primer archivo...')
+fs.readFile('./archivo.txt', 'utf-8', (err, text) => {
+    console.log("primer texto:" ,text)
+})
+
+// const text = await readFilePromised('./archivo.txt', 'utf-8')
+// console.log("primer texto:", text)
 
 console.log('Haciendo algo mientras lee el archivo')
 
-console.log('Leyendo el archivo el primer archivo...')
-const secondText = await fs.readFile('./archivo2.txt', 'utf-8', () => {})
-console.log(secondText)
+
+console.log('Leyendo el segundo archivo...')
+fs.readFile('./archivo2.txt', 'utf-8', (err, text) => {
+    console.log("segundo texto:" ,text)
+})
