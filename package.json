@@ -23,6 +23,12 @@
   },
   "homepage": "https://github.com/Fgvillalba/node-js#readme",
   "dependencies": {
-    "picocolors": "^1.1.1"
+    "picocolors": "1.1.1"
+  },
+  "devDependencies": {
+    "standard": "^17.1.2"
+  },
+  "eslintConfig": {
+    "extends": "standard"
   }
 }
