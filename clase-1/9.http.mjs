@@ -1,7 +1,8 @@
 import http from 'node:http'
 import { findAvailablePort } from './10.free-port.mjs'
 
-const desiredPort = process.argv[2] ?? 3000
+//const desiredPort = process.argv[2] ?? 3000
+const desiredPort = process.env.PORT ?? 3000
 
 const server = http.createServer((req, res) => {
     console.log('request received')
