@@ -1,0 +1,20 @@
+{
+  "name": "clase-2",
+  "version": "1.0.0",
+  "description": "api with express",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon 1.http.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node",
+    "express"
+  ],
+  "author": "Federico Villalba",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "standard": "^17.1.2"
+  }
+}
