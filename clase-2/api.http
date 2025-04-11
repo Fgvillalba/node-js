@@ -1,0 +1,19 @@
+###Recuperar info de pokemon ditto
+GET http://localhost:1234/pokemon/ditto
+
+###Crear pokemon
+POST http://localhost:1234/pokemon
+Content-Type: application/json
+
+{
+    "height": 4,
+    "name": "carlos",
+    "moves": [
+    {
+      "move": {
+        "name": "transform",
+        "url": "https://pokeapi.co/api/v2/move/144/"
+      }
+    }
+    ]
+}
