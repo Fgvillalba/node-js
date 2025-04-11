@@ -1,3 +1,6 @@
+###Get /
+GET http://localhost:1234/
+
 ###Recuperar info de pokemon ditto
 GET http://localhost:1234/pokemon/ditto
 
@@ -6,7 +9,7 @@ POST http://localhost:1234/pokemon
 Content-Type: application/json
 
 {
-    "height": 4,
+    "height": 5,
     "name": "carlos",
     "moves": [
     {
@@ -17,3 +20,6 @@ Content-Type: application/json
     }
     ]
 }
+
+### get image
+GET http://localhost:1234/cherry.jpg

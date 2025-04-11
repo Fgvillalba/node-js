@@ -6,6 +6,7 @@
   "scripts": {
     "dev:1": "nodemon 1.http.mjs",
     "dev:2": "nodemon 2.routing.mjs",
+    "dev:3": "node --watch 3.express.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -17,5 +18,8 @@
   "devDependencies": {
     "nodemon": "^3.1.9",
     "standard": "^17.1.2"
+  },
+  "dependencies": {
+    "express": "5.1.0"
   }
 }
