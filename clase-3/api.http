@@ -1,0 +1,30 @@
+### Get all movies
+GET http://localhost:1234/movies
+
+
+### Get movie by id
+GET http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+
+### Get movie not found
+GET http://localhost:1234/movies/1
+
+###Get movies by genre
+GET http://localhost:1234/movies?genre=Biography
+
+
+###
+POST http://localhost:1234/movies
+Content-Type: application/json
+
+{
+ "title": "The Good Father",
+ "year": 2008,
+ "director": "Christopher Nolan",
+ "duration": 152,
+ "poster": "https://media.newyorker.com/photos/594044d90c240c2a1fd678ce/1:1/w_2105,h_2105,c_limit/970324_ra409.jpg",
+ "genre": [
+     "Action",
+     "Crime",
+     "Drama"
+    ]
+}
