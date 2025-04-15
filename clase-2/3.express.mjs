@@ -13,6 +13,7 @@ app.disable('x-powered-by')
 app.use(express.static('./'))
 
 
+//Parse the body's json request to req.body
 app.use(express.json())
 //middleware
 // app.use((req, res, next) => {
