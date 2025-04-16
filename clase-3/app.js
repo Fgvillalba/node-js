@@ -10,6 +10,7 @@ app.disable('x-powered-by');
 app.use(express.json());
 
 app.get('/movies', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*'); //CORS allow external origins
   const { genre } = req.query;
   if (genre) {
     let moviesByGenre = movies.filter((movie) =>
