@@ -1,7 +1,7 @@
 const express = require('express');
 const crypto = require('node:crypto');
 const movies = require('./movies.json');
-const { validateMovie } = require('./schemas/movies.js');
+const { validateMovie, validatePartialMovie } = require('./schemas/movies.js');
 
 const app = express();
 const port = process.env.PORT ?? 1234;
@@ -30,7 +30,6 @@ app.get('/movies/:movieId', (req, res) => {
 app.post('/movies', (req, res) => {
   const validationResult = validateMovie(req.body);
 
-  console.log({ body: validationResult.data });
   if (validationResult.error) {
     return res
       .status(400)
@@ -43,6 +42,28 @@ app.post('/movies', (req, res) => {
   };
   movies.push(newMovie);
   res.status(201).json(newMovie);
+});
+
+app.patch('/movies/:id', (req, res) => {
+  const { id } = req.params;
+  const result = validatePartialMovie(req.body);
+
+  if (result.error) {
+    return res.status(400).json({ message: JSON.parse(result.error.message) });
+  }
+
+  const movieIndex = movies.findIndex((movie) => movie.id === id);
+  if (movieIndex < 0) {
+    return res.status(400).json({ message: 'Movie not found' });
+  }
+
+  const updateMovie = {
+    ...movies[movieIndex],
+    ...result.data,
+  };
+
+  movies[movieIndex] = updateMovie;
+  res.json(updateMovie);
 });
 
 app.use((req, res) => {
