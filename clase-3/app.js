@@ -1,6 +1,7 @@
 const express = require('express');
 const crypto = require('node:crypto');
 const movies = require('./movies.json');
+const { validateMovie } = require('./schemas/movies.js');
 
 const app = express();
 const port = process.env.PORT ?? 1234;
@@ -27,16 +28,18 @@ app.get('/movies/:movieId', (req, res) => {
 });
 
 app.post('/movies', (req, res) => {
-  const { title, year, director, duration, poster, genre, rate } = req.body;
+  const validationResult = validateMovie(req.body);
+
+  console.log({ body: validationResult.data });
+  if (validationResult.error) {
+    return res
+      .status(400)
+      .json({ error: JSON.parse(validationResult.error.message) });
+  }
+
   const newMovie = {
     id: crypto.randomUUID(),
-    title,
-    year,
-    director,
-    duration,
-    poster,
-    genre,
-    rate: rate ?? 0,
+    ...validationResult.data,
   };
   movies.push(newMovie);
   res.status(201).json(newMovie);

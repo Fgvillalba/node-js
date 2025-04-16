@@ -19,12 +19,8 @@ Content-Type: application/json
 {
  "title": "The Good Father",
  "year": 2008,
- "director": "Christopher Nolan",
+ "director": "Francis Ford Copola",
  "duration": 152,
- "poster": "https://media.newyorker.com/photos/594044d90c240c2a1fd678ce/1:1/w_2105,h_2105,c_limit/970324_ra409.jpg",
- "genre": [
-     "Action",
-     "Crime",
-     "Drama"
-    ]
+ "poster": "https://img.fruugo.com/product/4/49/14441494_max.jpg",
+ "genre": ["Action","Crime", "Drama"]
 }
