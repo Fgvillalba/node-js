@@ -7,10 +7,21 @@ const app = express();
 const port = process.env.PORT ?? 1234;
 app.disable('x-powered-by');
 
+const ACCEPTED_ORIGINS = [
+  'http://localhost:8080',
+  'http://192.168.0.12:8080',
+  'https://movies.com',
+];
+
 app.use(express.json());
 
 app.get('/movies', (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*'); //CORS allow external origins
+  const origin = req.header('origin');
+  console.log(origin);
+  if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
+    res.header('Access-Control-Allow-Origin', origin); //CORS: allow external origins
+  }
+
   const { genre } = req.query;
   if (genre) {
     let moviesByGenre = movies.filter((movie) =>
