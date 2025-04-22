@@ -6,8 +6,9 @@ const { validateMovie, validatePartialMovie } = require('./schemas/movies.js');
 
 const app = express();
 const port = process.env.PORT ?? 1234;
-app.use(express.json());
+app.use(express.json()); //parseo de JSON
 app.use(
+  //middleware de cors
   cors({
     origin: (origin, callback) => {
       const ACCEPTED_ORIGINS = [
@@ -28,18 +29,6 @@ app.use(
   }),
 );
 app.disable('x-powered-by');
-
-// const ACCEPTED_ORIGINS = [
-//   'http://localhost:8080',
-//   'http://192.168.0.12:8080',
-//   'https://movies.com',
-// ];
-
-// métodos normales: GET/HEAD/POST
-// métodos complejos: PUT/PATCH/DELETE
-
-// CORS PRE-Flight
-// OPTIONS
 
 app.get('/movies', (req, res) => {
   // const origin = req.header('origin');
