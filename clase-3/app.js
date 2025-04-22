@@ -5,7 +5,7 @@ const movies = require('./movies.json');
 const { validateMovie, validatePartialMovie } = require('./schemas/movies.js');
 
 const app = express();
-const port = process.env.PORT ?? 1234;
+const PORT = process.env.PORT ?? 1234;
 app.use(express.json()); //parseo de JSON
 app.use(
   //middleware de cors
@@ -128,6 +128,6 @@ app.use((req, res) => {
   res.status(404).send('<h1>Not found</h1>');
 });
 
-app.listen(port, () => {
-  console.log(`server listening on port http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`server listening on PORT http://localhost:${PORT}`);
 });
