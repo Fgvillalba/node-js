@@ -1,12 +1,12 @@
-const express = require('express');
-const crypto = require('node:crypto');
-const cors = require('cors');
-const movies = require('./movies.json');
-const { validateMovie, validatePartialMovie } = require('./schemas/movies.js');
+import express, { json } from 'express';
+import { randomUUID } from 'node:crypto';
+import cors from 'cors';
+import movies from './movies.json' with { type: 'json' };
+import { validateMovie, validatePartialMovie } from './schemas/movies.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 1234;
-app.use(express.json()); //parseo de JSON
+app.use(json()); //parseo de JSON
 app.use(
   //middleware de cors
   cors({
@@ -64,7 +64,7 @@ app.post('/movies', (req, res) => {
   }
 
   const newMovie = {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     ...validationResult.data,
   };
   movies.push(newMovie);
