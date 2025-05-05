@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise';
+import { v4 as uuidv4, parse } from 'uuid';
 
 const config = {
   host: 'localhost',
@@ -14,6 +15,11 @@ try {
 } catch (oError) {
   console.log('Error al conectar a my sql');
   process.exit(1);
+}
+
+function uuidToBinary(uuidString) {
+  const buffer = parse(uuidString);
+  return Buffer.from(buffer);
 }
 
 export class MovieModel {
@@ -37,11 +43,68 @@ export class MovieModel {
     return movies;
   }
 
-  static async getById({ id }) {}
+  static async getById({ id }) {
+    const [movies] = await connection.query(
+      `SELECT  title, year, director, duration, poster, rate, BIN_TO_UUID(id) id
+                     FROM movie WHERE id = UUID_TO_BIN(?);`,
+      [id],
+    );
 
-  static async create({ input }) {}
+    if (!movies.length) return null;
 
-  static async delete({ id }) {}
+    return movies[0];
+  }
+
+  static async create({ input }) {
+    const {
+      genre: genreInput,
+      title,
+      year,
+      duration,
+      director,
+      rate,
+      poster,
+    } = input;
+
+    const [uuidResult] = await connection.query('SELECT UUID() uuid;');
+    const [{ uuid }] = uuidResult;
+
+    const [result] = await connection.query(
+      `INSERT INTO movie (id, title, year, director, duration, poster, rate) VALUES
+      (UUID_TO_BIN('${uuid}'), ?, ?, ?, ?, ?, ?);`,
+      [title, year, director, duration, poster, rate],
+    );
+
+    console.log(result);
+    const formattedNames = `${genreInput
+      .map((v) => JSON.stringify(v))
+      .join(', ')}`;
+    const [genreIdsResult] = await connection.query(
+      `SELECT id FROM genres WHERE name IN (${formattedNames})`,
+    );
+
+    const genresIds = genreIdsResult.map((result) => result.id);
+
+    const binId = uuidToBinary(uuid);
+    const valuesGenreInsert = genresIds.map((genreId) => {
+      return [binId, genreId];
+    });
+
+    const genreResult = connection.query(
+      `INSERT INTO movie_genres (movie_id, genre_id) VALUES ?;`,
+      [valuesGenreInsert],
+    );
+    return;
+  }
+
+  static async delete({ id }) {
+    const [{ affectedRows }] = await connection.query(
+      `DELETE FROM movie WHERE id=UUID_TO_BIN(?)`,
+      [id],
+    );
+
+    return affectedRows === 1;
+  }
 
   static async update({ id, input }) {}
 }
