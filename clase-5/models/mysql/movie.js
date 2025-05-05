@@ -8,7 +8,13 @@ const config = {
   database: 'moviesdb',
 };
 
-const connection = await mysql.createConnection(config);
+let connection;
+try {
+  connection = await mysql.createConnection(config);
+} catch (oError) {
+  console.log('Error al conectar a my sql');
+  process.exit(1);
+}
 
 export class MovieModel {
   static async getAll({ genre }) {
@@ -19,7 +25,8 @@ export class MovieModel {
              FROM movie m 
              JOIN movie_genres mg ON mg.movie_id = m.id 
              JOIN genres g ON g.id = mg.genre_id 
-             WHERE g.name = '${genre}'`,
+             WHERE g.name = ?`,
+        [genre], //Para evitar inyecciones de sql usando g.name = ${genre}
       );
       return movies;
     }
