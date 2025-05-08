@@ -69,32 +69,50 @@ export class MovieModel {
     const [uuidResult] = await connection.query('SELECT UUID() uuid;');
     const [{ uuid }] = uuidResult;
 
-    const [result] = await connection.query(
-      `INSERT INTO movie (id, title, year, director, duration, poster, rate) VALUES
-      (UUID_TO_BIN('${uuid}'), ?, ?, ?, ?, ?, ?);`,
-      [title, year, director, duration, poster, rate],
-    );
+    try {
+      const [result] = await connection.query(
+        `INSERT INTO movie (id, title, year, director, duration, poster, rate) VALUES
+        (UUID_TO_BIN('${uuid}'), ?, ?, ?, ?, ?, ?);`,
+        [title, year, director, duration, poster, rate],
+      );
+    } catch (error) {
+      throw new Error('Error when creating movie');
+    }
 
-    console.log(result);
-    const formattedNames = `${genreInput
-      .map((v) => JSON.stringify(v))
-      .join(', ')}`;
-    const [genreIdsResult] = await connection.query(
-      `SELECT id FROM genres WHERE name IN (${formattedNames})`,
-    );
+    try {
+      const formattedGenreNames = `${genreInput
+        .map((v) => JSON.stringify(v))
+        .join(', ')}`;
+      const [genreIdsResult] = await connection.query(
+        `SELECT id FROM genres WHERE name IN (${formattedGenreNames})`,
+      );
 
-    const genresIds = genreIdsResult.map((result) => result.id);
+      const genresIds = genreIdsResult.map((result) => result.id);
 
-    const binId = uuidToBinary(uuid);
-    const valuesGenreInsert = genresIds.map((genreId) => {
-      return [binId, genreId];
-    });
+      const binId = uuidToBinary(uuid);
+      const valuesGenreInsert = genresIds.map((genreId) => {
+        return [binId, genreId];
+      });
 
-    const genreResult = connection.query(
-      `INSERT INTO movie_genres (movie_id, genre_id) VALUES ?;`,
-      [valuesGenreInsert],
-    );
-    return;
+      const genreResult = await connection.query(
+        `INSERT INTO movie_genres (movie_id, genre_id) VALUES ?;`,
+        [valuesGenreInsert],
+      );
+    } catch (error) {
+      throw new Error('Error when creating genres realtionship');
+    }
+
+    try {
+      const [movies] = await connection.query(
+        `
+          SELECT title, year, director, duration, poster, rate, BIN_TO_UUID(id) id FROM movie
+          WHERE id = UUID_TO_BIN(?);`,
+        [uuid],
+      );
+      return movies[0];
+    } catch (error) {
+      throw new Error('Error when obtain the created  movie');
+    }
   }
 
   static async delete({ id }) {
