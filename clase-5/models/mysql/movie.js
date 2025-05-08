@@ -25,34 +25,46 @@ function uuidToBinary(uuidString) {
 export class MovieModel {
   static async getAll({ genre }) {
     if (genre) {
-      //   genre = genre.toLowerCase();
-      const [movies] = await connection.query(
-        `SELECT m.title, m.year, m.director, m.duration, m.poster, m.rate, BIN_TO_UUID(m.id) id, g.name genre 
-             FROM movie m 
-             JOIN movie_genres mg ON mg.movie_id = m.id 
-             JOIN genres g ON g.id = mg.genre_id 
-             WHERE g.name = ?`,
-        [genre], //Para evitar inyecciones de sql usando g.name = ${genre}
-      );
-      return movies;
+      try {
+        const [movies] = await connection.query(
+          `SELECT m.title, m.year, m.director, m.duration, m.poster, m.rate, BIN_TO_UUID(m.id) id, g.name genre 
+               FROM movie m 
+               JOIN movie_genres mg ON mg.movie_id = m.id 
+               JOIN genres g ON g.id = mg.genre_id 
+               WHERE g.name = ?`,
+          [genre], //Para evitar inyecciones de sql usando g.name = ${genre}
+        );
+        return movies;
+      } catch (error) {
+        throw new Error('Error when obtaining movies by genre');
+      }
     }
-    const [movies] = await connection.query(`
+
+    try {
+      const [movies] = await connection.query(`
         SELECT title, year, director, duration, poster, rate, BIN_TO_UUID(id) id FROM movie
         `);
 
-    return movies;
+      return movies;
+    } catch (error) {
+      throw new Error('Error when obtaining movies');
+    }
   }
 
   static async getById({ id }) {
-    const [movies] = await connection.query(
-      `SELECT  title, year, director, duration, poster, rate, BIN_TO_UUID(id) id
-                     FROM movie WHERE id = UUID_TO_BIN(?);`,
-      [id],
-    );
+    try {
+      const [movies] = await connection.query(
+        `SELECT  title, year, director, duration, poster, rate, BIN_TO_UUID(id) id
+                       FROM movie WHERE id = UUID_TO_BIN(?);`,
+        [id],
+      );
 
-    if (!movies.length) return null;
+      if (!movies.length) return null;
 
-    return movies[0];
+      return movies[0];
+    } catch (error) {
+      throw new Error('Error when obtaining movie by id');
+    }
   }
 
   static async create({ input }) {
