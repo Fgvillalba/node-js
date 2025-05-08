@@ -136,5 +136,32 @@ export class MovieModel {
     return affectedRows === 1;
   }
 
-  static async update({ id, input }) {}
+  static async update({ id, input }) {
+    const movie = await this.getById({ id });
+    if (movie) {
+      const updateMovie = {
+        ...movie,
+        ...input,
+      };
+
+      const result = await connection.query(
+        `
+        UPDATE movie
+        SET title = ?, year = ?, director = ?, duration = ?, poster = ?, rate = ?
+        WHERE id = UUID_TO_BIN(?);`,
+        [
+          updateMovie.title,
+          updateMovie.year,
+          updateMovie.director,
+          updateMovie.duration,
+          updateMovie.poster,
+          updateMovie.rate,
+          id,
+        ],
+      );
+      return updateMovie;
+    }
+
+    return false;
+  }
 }

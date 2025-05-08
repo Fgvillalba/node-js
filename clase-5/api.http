@@ -27,11 +27,14 @@ Content-Type: application/json
 }
 
 ###Update movie
-PATCH http://localhost:1234/movies/dcdd0fad-a94c-4810-8acc-5f108d3b18c3
+PATCH http://localhost:1234/movies/1389AC9425DA11F09D87CC28AA0AC01C
 Content-Type: application/json
 
 {
-    "year": 1993
+    "year": 1997,
+    "duration": 193,
+    "rate": 4.5,
+    "SQL": "ASDASDSADAS"
 }
 
 
