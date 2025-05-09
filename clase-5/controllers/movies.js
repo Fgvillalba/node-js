@@ -1,22 +1,27 @@
-import { MovieModel } from '../models/mysql/movie.js';
+//import { MovieModel } from '../models/locale-file-system/movie.js';
+//import { MovieModel } from '../models/mysql/movie.js';
 import { validateMovie, validatePartialMovie } from '../schemas/movies.js';
 
 export class MovieController {
-  static async getAll(req, res) {
+  constructor({ movieModel }) {
+    this.movieModel = movieModel;
+  }
+
+  getAll = async (req, res) => {
     const { genre } = req.query;
-    const movies = await MovieModel.getAll({ genre });
+    const movies = await this.movieModel.getAll({ genre });
 
     res.json(movies);
-  }
+  };
 
-  static async getById(req, res) {
+  getById = async (req, res) => {
     const { id } = req.params;
-    const movie = await MovieModel.getById({ id });
+    const movie = await this.movieModel.getById({ id });
     if (movie) return res.json(movie);
     res.status(404).send('Movie not found');
-  }
+  };
 
-  static async create(req, res) {
+  create = async (req, res) => {
     const validationResult = validateMovie(req.body);
 
     if (validationResult.error) {
@@ -25,21 +30,23 @@ export class MovieController {
         .json({ error: JSON.parse(validationResult.error.message) });
     }
 
-    const newMovie = await MovieModel.create({ input: validationResult.data });
+    const newMovie = await this.movieModel.create({
+      input: validationResult.data,
+    });
     res.status(201).json(newMovie);
-  }
+  };
 
-  static async delete(req, res) {
+  delete = async (req, res) => {
     const { id } = req.params;
-    const result = await MovieModel.delete({ id });
+    const result = await this.movieModel.delete({ id });
 
     if (result === false) {
       return res.status(404).json({ message: 'Movie not found' });
     }
     res.json({ mesage: 'Movie deleted' });
-  }
+  };
 
-  static async update(req, res) {
+  update = async (req, res) => {
     const { id } = req.params;
     const validationResult = validatePartialMovie(req.body);
 
@@ -49,7 +56,7 @@ export class MovieController {
         .json({ message: JSON.parse(validationResult.error.message) });
     }
 
-    const updatedMovie = await MovieModel.update({
+    const updatedMovie = await this.movieModel.update({
       id,
       input: validationResult.data,
     });
@@ -58,5 +65,5 @@ export class MovieController {
     }
 
     res.json(updatedMovie);
-  }
+  };
 }
